@@ -1,0 +1,237 @@
+<!doctype html>
+
+<html lang="zh-CN">
+  <head>
+
+    <meta charset="utf-8">
+    <title>invite-app</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    
+    <link rel="stylesheet" href="http://necolas.github.io/normalize.css/latest/normalize.css">
+    <style>
+      ul, ol {
+        list-style: none;
+        padding: 0;
+      }
+       
+      a {
+        text-decoration: none;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 4px 8px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 12px;
+        -webkit-user-select: none;
+
+        color: #ffffff;
+        border: 1px solid #0065BB;
+        background-color: #005ACF;
+      }
+      .button-black {
+        border: 1px solid #313131;
+        background-color: #3C3C3C;
+      }
+
+      .clearfix:before,
+      .clearfix:after {
+        display: table;
+        content: " ";
+      }
+      .clearfix:after {
+        clear: both;
+      }
+
+      .container {
+        width: 980px;
+        margin: 10px auto;
+        padding: 20px 10px;
+        border: 1px solid #DDDDDD;
+        border-radius: 4px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: #333333;
+      }
+
+      .search {
+        /*display: flex;*/
+      }
+      .search > input[type=search] {
+        padding: 4px;
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        font-size: 12px;
+        widows: 60px;
+        height: 20px;
+      }
+      .search > .invited {
+        display: inline-block;
+        line-height: 2em;
+        padding-left: 10px
+      }
+      .search > .invited a {
+        color: #008ACF;
+      }
+
+      .candidate {
+        display: inline-block;
+        float: left;
+        width: 50%;
+        padding: 8px 20px 8px 10px;
+        box-sizing: border-box;
+      }
+      .candidate-info {
+        display: ;
+        float: left;
+        padding: 2px 10px;
+      }
+      .candidate-info > a, .candidate-info > span {
+        display: block;
+      }
+      .candidate-info > a {
+        color: #008ACE;
+      }
+      .candidate-info > span {
+        color: #222222;
+      }
+      .candidate > img {
+        float: left;
+        width: 50px;
+        height: 50px;
+      }
+      .candidate > a {
+        float: right;
+        text-shadow: 0 -1px rgba(0,0,0, .8);
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+      <div class="search">
+        <input type="search" placeholder="搜索你想邀请的人" />
+        <div class="invited">
+          <!-- forEach: invited-template -->
+        </div>
+      </div>
+      <section class="recommended">
+        <header><h4>推荐人选</h4></header>
+        <ol class="clearfix">
+          <!-- forEach: recommended-template -->
+        </ol>
+      </section>
+    </div>
+
+    <script type="text/template" id="invited-template">
+      <% if (invited.length) { %>
+        <span>您已邀请 </span>
+        <% _.each(invited, function(candidate, i, candidates) { %>
+          <a href="#<%= candidate.urlToken %>"><%= candidate.fullName %></a>
+          <% if (i !== candidates.length - 1) { %>、<% } %>
+        <% }); %>
+        <span>
+        <% if (invited.length < total) { %>等<% } %><%= total %>人</span>
+      <% } %>
+    </script>
+
+    <script type="text/template" id="candidate-template">
+      <li class="candidate">
+          <img src="<%= avatarPath %>" alt="<%= bio %>" />
+          <div class="candidate-info">
+            <a href="#<%= urlToken %>"><%= fullName %></a>
+            <span><%= bio %></span>
+          </div>
+          <a href="javascript:;" class="button<% if (selected) { %> button-black<% } %>">
+          <% if (selected) { %>收回邀请<% } else { %>邀请回答<% } %>
+          </a>
+        </li>
+    </script>
+
+    <script src="cdn/jquery-2.0.3.js"></script>
+    <script src="cdn/underscore.js"></script>
+    <script src="cdn/backbone.js"></script>
+    
+    <script src="app.js"></script>
+
+    <script>
+      $(function() {
+        var invited, recommended;
+
+        invited = panelModel.invited;
+        recommended = panelModel.recommended;
+
+        invited.map(function(candidate, i) {
+          return candidate.selected = true, candidate;
+        });
+
+        window.App = PanelApp(_.union(invited, recommended));
+      });
+    </script>
+
+    <script>
+      var panelModel = {
+        "comment": "http://octodex.github.com/",
+        "invited": [
+          {
+            "fullName": "the Mardigrastocat",
+            "urlToken": "mardigrastocat",
+            "avatarPath": "http://octodex.github.com/images/Mardigrastocat.png",
+            "bio": "Octodex",
+            "id": 1
+          },
+          {
+            "fullName": "the Kimonotocat",
+            "urlToken": "kimonotocat",
+            "avatarPath": "http://octodex.github.com/images/kimonotocat.png",
+            "bio": "Octodex",
+            "id": 2
+          },
+          {
+            "fullName": "the Skitchtocat",
+            "urlToken": "skitchtocat",
+            "avatarPath": "http://octodex.github.com/images/skitchtocat.png",
+            "bio": "Octodex",
+            "id": 3
+          }
+        ],
+        "recommended": [
+          {
+            "fullName": "the Droidtocat",
+            "urlToken": "droidtocat",
+            "avatarPath": "http://octodex.github.com/images/droidtocat.png",
+            "bio": "Octodex",
+            "id": 4
+          },
+          {
+            "fullName": "the Goretocat",
+            "urlToken": "goretocat",
+            "avatarPath": "http://octodex.github.com/images/goretocat.png",
+            "bio": "Octodex",
+            "id": 5
+          },
+          {
+            "fullName": "the FIRSTocat",
+            "urlToken": "firstocat",
+            "avatarPath": "http://octodex.github.com/images/FIRSTocat.png",
+            "bio": "Octodex",
+            "id": 6
+          },
+          {
+            "fullName": "the Professortocat",
+            "urlToken": "professortocat",
+            "avatarPath": "http://octodex.github.com/images/Professortocat_v2.png",
+            "bio": "Octodex",
+            "id": 7
+          }
+        ]
+      };
+    </script>
+  </body>
+</html>
